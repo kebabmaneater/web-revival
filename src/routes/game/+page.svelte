@@ -1,5 +1,5 @@
 <script>
-	import { Player } from '../../Game/Player.svelte';
+	import { getMiscSkillByName, Player } from '../../Game/Player.svelte';
 	import { Update, MainLoop, Render } from '../../Game/Game.svelte';
 	import Newsticker from '../Components/Misc/Newsticker.svelte';
 	import Frame from '../Components/Frame.svelte';
@@ -18,6 +18,7 @@
 
         Render.connect(() => {
 			Player._player = { ...Player._player };
+			Player._player.stats = { ...Player._player.stats };
         });
 
 		MainLoop.start();
@@ -51,12 +52,27 @@
 				in:scale={{ duration: 300, start: 0, opacity: 1 }}
 			/>
 			<p>You are begging for money... Gaining 1 g/s</p>
-		{:else}
+		{:else if getCurrentAction() === 'strength_train'}
+            <p>Strenght training is fun!</p>
+		{:else if getCurrentAction() === 'shop'}
+		<p>Humble shop</p>
+		<hr />
+			<button
+				class="mt-1 w-100 cursor-pointer bg-linear-to-r from-orange-200/0 via-orange-300 to-orange-200/0"
+                onclick={() => {
+                    const strength = getMiscSkillByName("strength");
+                    if (strength === undefined) return;
+                    strength.xpMultipliers.push(() => 100)
+                }}
+			>
+                Buy dumpbells. Cost: 20
+			</button>
+        {:else}
 			<p>You are idling around</p>
 		{/if}
 	</Frame>
 
-	<Frame size={[460, 100]} offset={[650, 230]}>
+	<Frame size={[460, getCurrentActions().length * 28 + 50]} offset={[650, 230]}>
 		<p>Actions</p>
 		<hr />
 		{#each getCurrentActions() as action (action.id)}

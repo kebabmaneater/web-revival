@@ -1,4 +1,4 @@
-import { Task } from "./Task.svelte";
+import { Stat, Task } from "./Classes.svelte";
 
 interface Player {
     money: number;
@@ -6,12 +6,12 @@ interface Player {
     coordinates: number[];
 
     stats: {
-        STR: number,
-        ESS: number,
-        AGL: number,
-        SPD: number,
-        INT: number,
-        DEF: number,
+        STR: Stat,
+        ESS: Stat,
+        AGL: Stat,
+        SPD: Stat,
+        INT: Stat,
+        DEF: Stat,
     }
 
     skillData: {
@@ -27,12 +27,24 @@ class PlayerClass {
         coordinates: [1920 / 3, 1080 / 3],
 
         stats: {
-            STR: 1,
-            ESS: 0,
-            AGL: 1,
-            SPD: 1,
-            INT: 1,
-            DEF: 1
+            STR: new Stat({
+                value: 1
+            }),
+            ESS: new Stat({
+                value: 0
+            }),
+            AGL: new Stat({
+                value: 1
+            }),
+            SPD: new Stat({
+                value: 1
+            }),
+            INT: new Stat({
+                value: 1
+            }),
+            DEF: new Stat({
+                value: 1
+            }),
         },
 
         skillData: {
@@ -72,6 +84,14 @@ class PlayerClass {
     set coordinates(value) {
         this._player.coordinates = value
     }
+}
+
+export function getMiscSkillByName(name: string) {
+    const miscSkills = Player._player.skillData.Misc as Array<Task>;
+
+    return miscSkills.find(
+        (skill) => skill.name?.toLowerCase() === name.toLowerCase()
+    );
 }
 
 export const Player = new PlayerClass();

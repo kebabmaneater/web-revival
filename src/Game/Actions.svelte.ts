@@ -1,3 +1,4 @@
+import type { Task } from "./Classes.svelte";
 import { Update } from "./Game.svelte";
 import { Player } from "./Player.svelte";
 
@@ -15,14 +16,12 @@ export function getCurrentAction() {
 
 let stopCurrentAction = () => {};
 
-function startAction(actionId: string, onUpdate: () => void, onInit?: () => void) {
+function startAction(actionId: string, onUpdate: () => void) {
     if (currentAction === actionId) return;
 
     currentAction = actionId;
     stopCurrentAction();
 
-    if (onInit !== undefined) onInit();
-    
     stopCurrentAction = Update.connect(onUpdate);
 }
 
@@ -30,6 +29,14 @@ function openActionMenu(actionId: string, action: ActionNode) {
     stopCurrentAction();
     currentAction = actionId;
     currentActions = getSubActions(action);
+}
+
+function getMiscSkillByName(name: string) {
+    const miscSkills = Player._player.skillData.Misc as Array<Task>;
+
+    return miscSkills.find(
+        (skill) => skill.name?.toLowerCase() === name.toLowerCase()
+    );
 }
 
 const ACTIONS_INFLUENCES = {
@@ -41,7 +48,18 @@ const ACTIONS_INFLUENCES = {
 
     on_strength_training: () =>
         startAction("strength_train", () => {
-            Player._player.skillData.Misc[0].increaseXp();
+            const strengthSkill = getMiscSkillByName("strength");
+            if (strengthSkill === undefined) return;
+            strengthSkill.increaseXp();
+
+            strengthSkill.onLevelUp.connect((newLevel) => {
+                const mult = newLevel * 0.01 + 1
+                Player._player.stats.STR.setFunction("strength_train", 
+                    () => {
+                        return mult
+                    }
+                )
+            })
         }),
 };
 
@@ -92,6 +110,7 @@ export const ACTIONS = {
             currentActions = getSubActions(ACTIONS.strength_train);
         },
 
+
         home: GO_HOME,
     },
 
@@ -104,7 +123,7 @@ export const ACTIONS = {
     },
 };
 
-const DEFAULT_ACTIONS: ActionNode[] = [ACTIONS.begging, ACTIONS.strength_train];
+const DEFAULT_ACTIONS: ActionNode[] = [ACTIONS.begging, ACTIONS.strength_train, ACTIONS.shop];
 let currentActions: ActionNode[] = $state(DEFAULT_ACTIONS);
 
 export function getCurrentActions(): ActionNode[] {

@@ -24,8 +24,8 @@
 						</th>
 						<th>{value2.level}</th>
 						<th>NONE</th>
-						<th>{value2.getXpGain()}</th>
-						<th>{value2.getXpLeft()}</th>
+						<th>{value2.getXpGain().toExponential().replace("+", "")}</th>
+						<th>{value2.getXpLeft().toExponential().replace("+", "")}</th>
 					</tr>
 				{/each}
 			{/each}
