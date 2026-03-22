@@ -18,9 +18,9 @@
 	}
 </script>
 
-<div id="Stats" class="w-44 bg-[#bebbb0] text-center">
+<div id="Stats" class="w-2/7 bg-[#bebbb0] text-left">
 	{#each Object.entries(Player._player.stats) as [stat, value], i (i)}
-		<span>{stat}:</span>
+		<span class="ml-2">{stat}:</span>
 		<span>{formatEuroNumber(value.value)}</span>
 		<br />
 	{/each}

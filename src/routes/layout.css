@@ -1,7 +1,23 @@
 @import 'tailwindcss';
+@import 'tailwindcss/utilities';
+
+@font-face {
+    font-family: 'JetBrainsMono Nerd Font';
+    src: url('/fonts/JetBrainsMonoNerdFont-Regular.ttf');
+}
 
 @plugin '@tailwindcss/typography';
 
 body {
-    @apply font-mono;
+    @apply overflow-hidden font-mono;
+}
+
+@layer base {
+    .font-outline-2 {
+        -webkit-text-stroke: 2px black;
+    }
+
+    .font-outline-4 {
+        -webkit-text-stroke: 4px black;
+    }
 }

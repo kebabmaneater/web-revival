@@ -12,29 +12,33 @@ export interface Task {
     maxLevel: number;
     xp: number;
     xpMultipliers: Function[];
-    onLevelUp: Signal<number>;
+    onLevelUp: Signal<[number, number]>;
 }
 
 function applyMultipliers(value: number, multipliers: Function[]) {
-    var finalMultiplier = 1
-    multipliers.forEach(function (multiplierFunction) {
-        var multiplier = multiplierFunction()
-        finalMultiplier *= multiplier
-    })
-    var finalValue = Math.round(value * finalMultiplier)
-    return finalValue
+    let finalMultiplier = 1
+    for (let i = 0; i < multipliers.length; i++) {
+        finalMultiplier *= multipliers[i]() as number
+    }
+    return Math.round(value * finalMultiplier)
 }
 
 function applyMultipliersNonRound(value: number, multipliers: Function[]) {
-    var finalMultiplier = 1
-    multipliers.forEach(function (multiplierFunction) {
-        var multiplier = multiplierFunction()
-        finalMultiplier *= multiplier
-    })
+    let finalMultiplier = 1
+    for (let i = 0; i < multipliers.length; i++) {
+        finalMultiplier *= multipliers[i]() as number
+    }
     return value * finalMultiplier
 }
 
 export class Task {
+    private static readonly LEVEL_GROWTH = 1.01
+
+    // Cached per-instance constants/state for hot-loop performance
+    private readonly _baseMaxXp: number
+    private readonly _growth: number
+    private _growthPowLevel: number
+
     constructor(baseData: baseData) {
         this.baseData = baseData
         this.name = baseData.name
@@ -42,38 +46,64 @@ export class Task {
         this.maxLevel = 0
         this.xp = 0
         this.xpMultipliers = []
-        this.onLevelUp = new Signal<number>()
+        this.onLevelUp = new Signal<[number, number]>()
+
+        this._baseMaxXp = baseData.maxXp
+        this._growth = Task.LEVEL_GROWTH
+        this._growthPowLevel = 1 // growth^level at level 0
     }
 
-    getMaxXp() {
-        var maxXp = Math.round(this.baseData.maxXp * (this.level + 1) * Math.pow(1.01, this.level))
-        return maxXp
+    public getMaxXp() {
+        return Math.round(this._baseMaxXp * (this.level + 1) * this._growthPowLevel)
     }
 
-    getXpLeft() {
-        return Math.round(this.getMaxXp() - this.xp)
+    public getXpLeft() {
+        return this.getMaxXp() - this.xp
     }
 
-    getMaxLevelMultiplier() {
-        var maxLevelMultiplier = 1 + this.maxLevel / 10
-        return maxLevelMultiplier
+    public getMaxLevelMultiplier() {
+        return 1 + this.maxLevel / 10
     }
 
-    getXpGain() {
+    public getXpGain() {
         return applyMultipliers(1, this.xpMultipliers)
     }
 
-    increaseXp() {
-        this.xp += this.getXpGain()
-        if (this.xp >= this.getMaxXp()) {
-            var excess = this.xp - this.getMaxXp()
-            while (excess >= 0) {
-                this.level += 1
-                this.onLevelUp.fire(this.level)
-                excess -= this.getMaxXp()
+    public increaseXp() {
+        let gainedXp = this.getXpGain()
+        if (gainedXp <= 0) return
+
+        let level = this.level
+        let xp = this.xp
+        const base = this._baseMaxXp
+        const growth = this._growth
+        let growthPow = this._growthPowLevel
+
+        let maxXpForLevel = Math.round(base * (level + 1) * growthPow)
+
+        while (gainedXp > 0) {
+            const xpLeft = maxXpForLevel - xp
+            if (gainedXp < xpLeft) {
+                xp += gainedXp
+                break
             }
-            this.xp = this.getMaxXp() + excess
+
+            gainedXp -= xpLeft
+            level++
+            xp = 0
+
+            growthPow *= growth
+            maxXpForLevel = Math.round(base * (level + 1) * growthPow)
         }
+
+        const levelDiff = level - this.level
+        if (levelDiff > 0) {
+            this.onLevelUp.fire([level, levelDiff])
+        }
+
+        this.level = level
+        this.xp = xp
+        this._growthPowLevel = growthPow
     }
 }
 

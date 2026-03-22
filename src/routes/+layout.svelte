@@ -8,11 +8,22 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-<footer class="absolute z-10 bottom-0 w-full bg-gray-500">
-	<nav>
-		<a class="bg-blue-600 px-3 text-white transition hover:bg-blue-700" href={resolve('/')}>home</a>
-		<a class="bg-blue-600 px-3 text-white transition hover:bg-blue-700" href={resolve('/game')}
-			>game</a
+<footer
+	class="fixed bottom-0 z-10 w-full bg-linear-to-t from-slate-800 to-gray-700"
+	style="z-index: 1_000_000_000_000;"
+>
+	<nav class="flex items-center justify-center gap-4">
+		<a
+			class="w-24 bg-linear-to-r from-blue-800/0 via-blue-600 to-blue-800/0 px-3 text-center text-white transition hover:via-yellow-600"
+			href={resolve('/')}>home</a
+		>
+		<a
+			class="w-24 bg-linear-to-r from-blue-800/0 via-blue-600 to-blue-800/0 px-3 text-center text-white transition hover:via-yellow-600"
+			href={resolve('/game')}>game</a
+		>
+		<a
+			class="w-24 bg-linear-to-r from-blue-800/0 via-blue-600 to-blue-800/0 px-3 text-center text-white transition hover:via-yellow-600"
+			href={resolve('/links')}>mystery</a
 		>
 	</nav>
 </footer>

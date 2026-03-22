@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Player } from "../../Game/Player.svelte";
+	import { Player } from '../../Game/Player.svelte';
 
 	let { children } = $props();
 
@@ -10,6 +10,8 @@
 	let offsetY = 0;
 
 	function startDrag(event: MouseEvent) {
+		// Prevent drag if the target is a titlebar
+		if ((event.target as HTMLElement)?.classList.contains('titlebar')) return;
 		dragging = true;
 		offsetX = event.clientX - coordinates[0];
 		offsetY = event.clientY - coordinates[1];
@@ -32,7 +34,6 @@
 
 <svelte:body onmousedown={startDrag} />
 
-<div class="absolute" style="left: {coordinates[0]}px; top: {coordinates[1]}px">
+<div class="relative" style="left: {coordinates[0]}px; top: {coordinates[1]}px">
 	{@render children()}
 </div>
-
