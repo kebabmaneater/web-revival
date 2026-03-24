@@ -33,7 +33,7 @@
 </script>
 
 <svelte:body onmousedown={startDrag} />
-
-<div class="relative" style="left: {coordinates[0]}px; top: {coordinates[1]}px">
+ 
+<div class="relative" style="left: {coordinates[0]}px; top: {coordinates[1]}px; z-index: 0">
 	{@render children()}
 </div>

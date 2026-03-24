@@ -1,6 +1,6 @@
 <script>
-	import { getMiscSkillByName, Player } from '../../Game/Player.svelte';
-	import { Update, MainLoop, Render } from '../../Game/Game.svelte';
+	import { Player } from '../../Game/Player.svelte';
+	import { MainLoop, Render } from '../../Game/Game.svelte';
 	import Newsticker from '../Components/Misc/Newsticker.svelte';
 	import Frame from '../Components/Frame.svelte';
 	import Drag from '../Components/Drag.svelte';
@@ -8,7 +8,7 @@
 	import Skills from '../Components/Skills.svelte';
 	import Options from '../Components/Options.svelte';
 	import { onMount } from 'svelte';
-	import { getCurrentActions, getCurrentAction } from '../../Game/Actions.svelte';
+	import { ActionManager } from '../../Game/Actions/BaseAction.svelte';
 
 	onMount(() => {
 		Render.connect(() => {
@@ -37,7 +37,7 @@
 	class="absolute top-0 left-0 -z-10 h-full w-full cursor-grab"
 ></div>
 
-<Newsticker {tooltips} style={"default"} speed={2}/>
+<Newsticker {tooltips} style={'default'} speed={2} />
 
 <Frame
 	size={[276, 100]}
@@ -69,46 +69,20 @@
 	</Frame>
 
 	<Frame size={[460, 280]} offset={[660, 0]} title={'Happenings'}>
-		{#if getCurrentAction() === 'begging'}
-			<img class="mx-2 my-4" src="/situations/beg.png" alt="What the hell i going on?" />
-			<p>
-				You are begging for money... Gaining {Player.notation(
-					Player.skillData.Jobs[0].level * 0.2 + 1,
-					2,
-					1
-				)} g/s
-			</p>
-		{:else if getCurrentAction() === 'strength_train'}
-			<p>Strenght training is fun!</p>
-		{:else if getCurrentAction() === 'shop'}
-			<p>Humble shop</p>
-			<hr />
-			<button
-				class="mt-1 w-100 cursor-pointer bg-linear-to-r from-orange-200/0 via-orange-300 to-orange-200/0"
-				onclick={() => {
-					const strength = getMiscSkillByName('strength');
-					if (strength === undefined) return;
-					strength.xpMultipliers.push(() => 100);
-				}}
-			>
-				Buy dumpbells. Cost: 20
-			</button>
-		{:else}
-			<p>You are idling around</p>
-		{/if}
+        <svelte:component this={Player.currentAction.displayComponent()} />
 	</Frame>
 
 	<Frame size={[460, 280]} offset={[1140, 0]} title={'Battle'}>
 		<p>You are not battling.</p>
 	</Frame>
 
-	<Frame size={[460, getCurrentActions().length * 28 + 50]} offset={[660, 300]} title={'Actions'}>
-		{#each getCurrentActions() as action (action.id)}
+	<Frame size={[460, Player.currentActions.length * 28 + 50]} offset={[660, 300]} title={'Actions'}>
+		{#each Player.currentActions as action (action.id)}
 			<button
 				class="mt-1 w-100 cursor-pointer bg-linear-to-r from-orange-200/0 via-orange-300 to-orange-200/0"
-				onclick={action.message_function}
+				onclick={() => ActionManager.onClicked(action)}
 			>
-				{action.message}
+				{action.displayName}
 			</button>
 			<br />
 		{/each}

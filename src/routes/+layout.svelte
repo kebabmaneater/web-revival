@@ -14,16 +14,16 @@
 >
 	<nav class="flex items-center justify-center gap-4">
 		<a
-			class="w-24 bg-linear-to-r from-blue-800/0 via-blue-600 to-blue-800/0 px-3 text-center text-white transition hover:via-yellow-600"
+			class="w-28 bg-linear-to-r from-blue-800/0 via-blue-600 to-blue-800/0 px-3 text-center text-white transition hover:via-yellow-600"
 			href={resolve('/')}>home</a
 		>
 		<a
-			class="w-24 bg-linear-to-r from-blue-800/0 via-blue-600 to-blue-800/0 px-3 text-center text-white transition hover:via-yellow-600"
+			class="w-28 bg-linear-to-r from-blue-800/0 via-blue-600 to-blue-800/0 px-3 text-center text-white transition hover:via-yellow-600"
 			href={resolve('/game')}>game</a
 		>
 		<a
-			class="w-24 bg-linear-to-r from-blue-800/0 via-blue-600 to-blue-800/0 px-3 text-center text-white transition hover:via-yellow-600"
-			href={resolve('/links')}>mystery</a
+			class="w-28 bg-linear-to-r from-blue-800/0 via-blue-600 to-blue-800/0 px-3 text-center text-white transition hover:via-yellow-600"
+			href={resolve('/novel')}>novel</a
 		>
 	</nav>
 </footer>

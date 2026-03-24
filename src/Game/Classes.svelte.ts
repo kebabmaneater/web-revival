@@ -133,10 +133,6 @@ export class Stat {
         return applyMultipliersNonRound(this._inner.value, this.valueMultipliers);
     }
 
-    set value(_) {
-        throw new Error("Do not set the value directly! Use valueMultipliers instead!");
-    }
-
     // Add or update by key
     setFunction(key: string, func: ValueMultiplier) {
         this.multiplierMap.set(key, func);

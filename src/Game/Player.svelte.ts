@@ -1,5 +1,13 @@
+import type { GameAction } from "./Actions/BaseAction.svelte";
+import { BeggingAction } from "./Actions/BeggingAction.svelte";
+import { HomeAction } from "./Actions/HomeAction.svelte";
 import { Stat, Task } from "./Classes.svelte";
 import * as ADNotations from "@antimatter-dimensions/notations";
+
+export type SkillData = {
+        Misc: Task[],
+        Jobs: Task[]
+}
 
 interface Player {
     money: number;
@@ -19,11 +27,10 @@ interface Player {
         lockWindows: boolean,
     }
 
-    skillData: {
-        Misc: Task[],
-        Jobs: Task[]
-    }
+    skillData: SkillData
 
+    currentActions: GameAction[]
+    currentAction: GameAction
     notationStyle: typeof ADNotations.Notation
 }
 
@@ -58,6 +65,9 @@ class PlayerClass {
                 value: 1
             }),
         },
+
+        currentActions: [new BeggingAction()],
+        currentAction: new HomeAction(),
 
         skillData: {
             Misc: [
@@ -124,6 +134,22 @@ class PlayerClass {
 
     set lockWindows(value: boolean) {
         this._player.options.lockWindows = value
+    }
+
+    get currentActions() {
+        return this._player.currentActions;
+    }
+
+    set currentActions(value: GameAction[]) {
+        this._player.currentActions = value
+    }
+
+    get currentAction() {
+        return this._player.currentAction;
+    }
+
+    set currentAction(value: GameAction) {
+        this._player.currentAction = value
     }
 
     public notation(value: number, b: number, c: number) {
