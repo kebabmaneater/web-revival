@@ -14,11 +14,6 @@
 	<title>Cool stuff here!</title>
 </svelte:head>
 
-<div
-	style="background:url('/background.png') center/cover no-repeat;"
-	class="absolute top-0 left-0 -z-10 h-full w-full"
-></div>
-
 <div class="flex min-h-screen items-center justify-center">
 	<Frame positioning="relative" size={[800, 800]} offset={[0, 0]} title="Novel">
 		<div class="p-2 text-left">

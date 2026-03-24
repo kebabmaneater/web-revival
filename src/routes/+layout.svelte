@@ -8,6 +8,11 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
+<div
+	style="background:url('$lib/assets/background.png') center/cover no-repeat;"
+	class="absolute top-0 left-0 -z-10 h-full w-full"
+></div>
+
 <footer
 	class="fixed bottom-0 z-10 w-full bg-linear-to-t from-slate-800 to-gray-700"
 	style="z-index: 1_000_000_000_000;"

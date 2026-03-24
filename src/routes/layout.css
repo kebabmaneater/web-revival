@@ -1,11 +1,6 @@
 @import 'tailwindcss';
 @import 'tailwindcss/utilities';
 
-@font-face {
-    font-family: 'JetBrainsMono Nerd Font';
-    src: url('/fonts/JetBrainsMonoNerdFont-Regular.ttf');
-}
-
 @plugin '@tailwindcss/typography';
 
 body {

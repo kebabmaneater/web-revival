@@ -10,4 +10,5 @@ declare global {
 	}
 }
 
+// src/app.d.ts
 export {};

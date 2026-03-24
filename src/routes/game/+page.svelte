@@ -10,15 +10,6 @@
 	import { onMount } from 'svelte';
 	import { ActionManager } from '../../Game/Actions/BaseAction.svelte';
 
-	onMount(() => {
-		Render.connect(() => {
-			Player._player = { ...Player._player };
-			Player._player.stats = { ...Player._player.stats };
-		});
-
-		MainLoop.start();
-	});
-
 	const tooltips = [
 		'Did you know that this game will update in 5 hours?',
 		'This game was made using Svelte!',
@@ -26,16 +17,67 @@
 		'I use Arch, btw.',
 		'Fuck you NVIDIA!'
 	];
+
+	const useWindowDimensions = () => {
+		let width = $state(0);
+		let height = $state(0);
+		let loading = $state(true);
+
+		const handleResize = () => {
+			width = window.innerWidth;
+			height = window.innerHeight;
+		};
+
+		onMount(() => {
+			window.addEventListener('resize', handleResize);
+			handleResize();
+			loading = false;
+
+			return () => window.removeEventListener('resize', handleResize);
+		});
+
+		return {
+			get width() {
+				return width;
+			},
+			get height() {
+				return height;
+			},
+			get loading() {
+				return loading;
+			}
+		};
+	};
+
+	let windowDimensions = useWindowDimensions();
+
+
+	function goHome() {
+		const width = windowDimensions.width;
+		const height = windowDimensions.height;
+
+		const OFFSET_X = 640 / 2;
+		const OFFSET_Y = 360 / 2;
+
+		Player.coordinates = [width / 2 - OFFSET_X, height / 2 - OFFSET_Y];
+	}
+
+
+	onMount(() => {
+		Render.connect(() => {
+			Player._player = { ...Player._player };
+			Player._player.stats = { ...Player._player.stats };
+		});
+
+        goHome();
+		MainLoop.start();
+	});
+
 </script>
 
 <svelte:head>
 	<title>Skill Incremental</title>
 </svelte:head>
-
-<div
-	style="background:url('/background.png') center/cover no-repeat;"
-	class="absolute top-0 left-0 -z-10 h-full w-full cursor-grab"
-></div>
 
 <Newsticker {tooltips} style={'default'} speed={2} />
 
@@ -48,6 +90,38 @@
 >
 	<p class="my-1 ml-1 text-left">
 		Money: {Player.notation(Player.money, 2, 1)}
+	</p>
+</Frame>
+
+<Frame
+	size={[276, 100]}
+	offset={[15, 161]}
+	title={'Boosts'}
+	z_index={1_000_000_000_000}
+	draggable={false}
+>
+	<p class="my-1 ml-1 text-left">Sun: 1.1x happiness</p>
+</Frame>
+
+<Frame
+	size={[276, 100]}
+	offset={[305, 46]}
+	title={'Quick actions'}
+	z_index={1_000_000_000_000}
+	draggable={false}
+>
+	<p class="my-1 ml-1 text-left">
+		<button
+			class="mt-1 w-full cursor-pointer bg-linear-to-r from-orange-200/0 via-orange-300 to-orange-200/0"
+			onclick={() => goHome()}
+		>
+			Go home
+		</button>
+		<!-- <button -->
+		<!-- 	class="mt-1 w-full cursor-pointer bg-linear-to-r from-orange-200/0 via-orange-300 to-orange-200/0" -->
+		<!-- > -->
+		<!-- 	Maximise all windows -->
+		<!-- </button> -->
 	</p>
 </Frame>
 
@@ -69,7 +143,7 @@
 	</Frame>
 
 	<Frame size={[460, 280]} offset={[660, 0]} title={'Happenings'}>
-        <svelte:component this={Player.currentAction.displayComponent()} />
+		<svelte:component this={Player.currentAction.displayComponent()} />
 	</Frame>
 
 	<Frame size={[460, 280]} offset={[1140, 0]} title={'Battle'}>
@@ -104,18 +178,3 @@
 		dev!
 	</p>
 </footer>
-
-<style lang="postcss">
-	@reference 'tailwindcss';
-
-	body {
-		@apply overflow-hidden font-mono select-none;
-
-		background-image: url('/background.png');
-		background-size: 100% 100%;
-		background-repeat: no-repeat;
-		background-position: center center;
-	}
-
-    html, body { height: 100%; min-height 100% }
-</style>

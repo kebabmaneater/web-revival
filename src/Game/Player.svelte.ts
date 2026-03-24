@@ -39,7 +39,7 @@ class PlayerClass {
     _player = $state<Player>({
         money: 0,
         playtime: 0,
-        coordinates: [1920 / 3, 1080 / 3],
+        coordinates: [0, 0],
 
         options: {
             lockWindows: false

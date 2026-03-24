@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Frame from './Components/Frame.svelte';
 	import Newsticker from './Components/Misc/Newsticker.svelte';
 	import HoverImage from './Components/Misc/HoverImage.svelte';
@@ -16,11 +16,6 @@
 <svelte:head>
 	<title>Cool stuff here!</title>
 </svelte:head>
-
-<div
-	style="background:url('/background.png') center/cover no-repeat;"
-	class="absolute top-0 left-0 -z-10 h-full w-full"
-></div>
 
 <div class="absolute top-50 left-50">
 	<Gif />
@@ -57,8 +52,8 @@
 			<div class="p-2 text-left">
 				<div class="my-2 mt-4 w-full bg-orange-300 text-3xl">Welcome to my cool website!</div>
 				<div class="grid grid-cols-2 gap-0">
-					<img src="/situations/beg.png" alt="img" />
-					<img src="/situations/mugged.png" alt="img" />
+					<img src="$lib/assets/situations/beg.png" alt="img" />
+					<img src="$lib/assets/situations/mugged.png" alt="img" />
 				</div>
 
 				<p>This is a cool website type shi</p>
